@@ -3,7 +3,7 @@ import {Schema, model} from 'mongoose';
 import bcrypt from "bcryptjs";
 
 
-const administradorSchema = new Schema({
+const estudianteSchema = new Schema({
     nombre:{
         type:String,
         require:true,
@@ -23,7 +23,12 @@ const administradorSchema = new Schema({
         type:String,
         require:true,
         trim:true,
-				unique:true
+                unique:true
+    },
+    facultad:{
+        type:String,
+        require:true,
+        trim:true
     },
     password:{
         type:String,
@@ -43,7 +48,7 @@ const administradorSchema = new Schema({
     },
     rol:{
         type:String,
-        default:"administrador",
+        default:"estudiante",
     }
 
 },{
@@ -52,7 +57,7 @@ const administradorSchema = new Schema({
 
 
 // Método para cifrar el password del veterinario
-administradorSchema.methods.encrypPassword = async function(password){
+estudianteSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
     const passwordEncryp = await bcrypt.hash(password,salt)
     return passwordEncryp
@@ -60,17 +65,17 @@ administradorSchema.methods.encrypPassword = async function(password){
 
 
 // Método para verificar si el password ingresado es el mismo de la BDD
-administradorSchema.methods.matchPassword = async function(password){
+estudianteSchema.methods.matchPassword = async function(password){
     const response = await bcrypt.compare(password,this.password)
     return response
 }
 
 
 // Método para crear un token 
-administradorSchema.methods.crearToken = function(){
+estudianteSchema.methods.crearToken = function(){
     const tokenGenerado = this.token = Math.random().toString(36).slice(2)
     return tokenGenerado
 }
 
 
-export default model('Administrador',administradorSchema)
+export default model('Estudiante',estudianteSchema)
