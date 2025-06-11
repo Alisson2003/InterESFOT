@@ -5,10 +5,12 @@ import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodema
 const registro = async (req,res)=>{
     const {email,password} = req.body
     if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const administradorEmailBDD = await Administrador.findOne({email})
+        const administradorEmailBDD = await Administrador.findOne({email})
+
     if(administradorEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
-    const nuevoAdministrador = await Administrador(req.body)
-    nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password)
+        const nuevoAdministrador = await Administrador(req.body)
+    
+    //nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password)
 
     const token = nuevoAdministrador.crearToken()
     await sendMailToRegister(email,token)
