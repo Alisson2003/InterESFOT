@@ -78,7 +78,6 @@ const crearNuevoPassword = async (req,res)=>{
     await administradorBDD.save()
 
     //4
-
     res.status(200).json({msg: "Felicitaciones, ya puedes iniciar sesion con tu nuevo password"})
 
 }

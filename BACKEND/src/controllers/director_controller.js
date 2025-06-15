@@ -1,21 +1,21 @@
-import Estudiante from ".../models/Estudiante.js"
+import Director from "../models/Director.js"
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodemailler.js"
 
 
 const registro = async (req,res)=>{
     const {email,password} = req.body
     if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-        const estudianteEmailBDD = await Estudiante.findOne({email})
+        const directorEmailBDD = await Director.findOne({email})
 
-    if(estudianteEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
-        const nuevoEstudiante = await Estudiante(req.body)
+    if(directorEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
+        const nuevoDirector = await Director(req.body)
     
-    //nuevoEstudiante.password = await nuevoEstudiante.encrypPassword(password)
+    //nuevoDirector.password = await nuevoDirector.encrypPassword(password)
 
-    const token = nuevoEstudiante.crearToken()
+    const token = nuevoDirector.crearToken()
     await sendMailToRegister(email,token)
 
-    await estudianteBDD.save()
+    await nuevoDirector.save()
     res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
 
 }
@@ -24,13 +24,13 @@ const confirmarMail = async (req,res)=>{
     if (!(req.params.token)) return res.status(400).json({msg:"Lo sentimos, no se puede validar la cuenta"})
     
     //2
-    const estudianteBDD = await Estudiante.findOne({token:req.params.token})
+    const directorBDD = await Director.findOne({token:req.params.token})
 
-    if(!estudianteBDD?.token) return res.status(404).json({msg:"La cuenta ya ha sido confirmada"})
+    if(!directorBDD?.token) return res.status(404).json({msg:"La cuenta ya ha sido confirmada"})
     //3
-    estudianteBDD.token = null
-    estudianteBDD.confirmEmail=true
-    await estudianteBDD.save()
+    directorBDD.token = null
+    directorBDD.confirmEmail=true
+    await directorBDD.save()
 
     //4
     res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"})
@@ -39,21 +39,21 @@ const confirmarMail = async (req,res)=>{
 const recuperarPassword = async(req,res)=>{
     const {email} = req.body
     if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const estudianteBDD = await Estudiante.findOne({email})
-    if(!estudianteBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
-    const token = estudianteBDD.crearToken()
-    estudianteBDD.token=token
+    const directorBDD = await Director.findOne({email})
+    if(!directorBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
+    const token = directorBDD.crearToken()
+    directorBDD.token=token
     await sendMailToRecoveryPassword(email,token)
-    await estudianteBDD.save()
+    await directorBDD.save()
     res.status(200).json({msg:"Revisa tu correo electrónico para reestablecer tu cuenta"})
 }
 
 
 const comprobarTokenPasword = async (req,res)=>{
     const {token} = req.params
-    const estudianteBDD = await Estudiante.findOne({token})
-    if(estudianteBDD?.token !== req.params.token) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta"})
-    await estudianteBDD.save()
+    const directorBDD = await Director.findOne({token})
+    if(directorBDD?.token !== req.params.token) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta"})
+    await directorBDD.save()
     res.status(200).json({msg:"Token confirmado, ya puedes crear tu nuevo password"}) 
 }
 
@@ -67,15 +67,15 @@ const crearNuevoPassword = async (req,res)=>{
 
     if(password !== confirmpassword) return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
 
-    const estudianteBDD = await Estudiante.findOne({token:req.params.token})
+    const directorBDD = await Director.findOne({token:req.params.token})
 
-    if(estudianteBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if(directorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     //3 logica - dejando token nulo y encriptacion de contraseña
-    estudianteBDD.token = null
-    estudianteBDD.password = await estudianteBDD.encrypPassword(password)
+    directorBDD.token = null
+    directorBDD.password = await directorBDD.encrypPassword(password)
 
-    await estudianteBDD.save()
+    await directorBDD.save()
 
     //4
 
