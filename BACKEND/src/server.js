@@ -10,7 +10,7 @@ import routerAdministrador from './routers/administrador_routes.js';
 // Inicializaciones
 const app = express()
 dotenv.config()
-module.exports = app;
+//module.exports = app;
 
 // Configuraciones 
 app.set('port',process.env.port || 3000);
