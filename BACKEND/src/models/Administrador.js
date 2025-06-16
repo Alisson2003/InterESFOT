@@ -6,12 +6,12 @@ import bcrypt from "bcryptjs";
 const administradorSchema = new Schema({
     nombre:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
     apellido:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
     celular:{
@@ -21,13 +21,13 @@ const administradorSchema = new Schema({
     },
     email:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
 				unique:true
     },
     password:{
         type:String,
-        require:true
+        required:true
     },
     status:{
         type:Boolean,
