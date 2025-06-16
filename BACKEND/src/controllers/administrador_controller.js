@@ -1,34 +1,25 @@
 import Administrador from "../models/Administrador.js"
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodemailler.js"
+import { crearTokenJWT } from "../middlewares/JWT.js"
 
-const registro = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        if (Object.values(req.body).includes(""))
-            return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-        const administradorEmailBDD = await Administrador.findOne({ email });
+const registro = async (req,res)=>{
+    const {email,password} = req.body
+    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+        const administradorEmailBDD = await Administrador.findOne({email})
 
-        if (administradorEmailBDD)
-            return res.status(400).json({ msg: "Lo sentimos, el email ya se encuentra registrado" });
+    if(administradorEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
+        const nuevoAdministrador = await Administrador(req.body)
+    
+    nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password)
 
-        const nuevoAdministrador = await Administrador(req.body);
+    const token = nuevoAdministrador.crearToken()
+    await sendMailToRegister(email,token)
 
-        nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password);
+    await nuevoAdministrador.save()
+    res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
 
-        const token = nuevoAdministrador.crearToken();
-        await sendMailToRegister(email, token);
-
-        await nuevoAdministrador.save();
-
-        res.status(200).json({ msg: "Revisa tu correo electrónico para confirmar tu cuenta" });
-    } catch (error) {
-        console.error("❌ Error en registro:", error);
-        res.status(500).json({ msg: "Error interno del servidor" });
-    }
-};
-
+}
 
 
 const confirmarMail = async (req,res)=>{
@@ -95,11 +86,36 @@ const crearNuevoPassword = async (req,res)=>{
 }
 
 
+const login = async(req,res)=>{
+    const {email,password} = req.body
+    if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
+        const administradorBDD = await Administrador.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
+    if(administradorBDDBDD?.confirmEmail===false) return res.status(403).json({msg:"Lo sentimos, debe verificar su cuenta"})
+    
+    if(!administradorBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
+        const verificarPassword = await Administrador.matchPassword(password)
+
+    if(!verificarPassword) return res.status(401).json({msg:"Lo sentimos, el password no es el correcto"})
+        const {nombre,apellido,direccion,telefono,_id,rol} = administradorBDD
+        const token = crearTokenJWT(administradorBDD._id,administradorBDD.rol)
+
+    res.status(200).json({
+        token,
+        nombre,
+        apellido,
+        direccion,
+        telefono,
+        _id,
+        email:veterinarioBDD.email
+    })
+}
+
 
 export {
     registro,
     confirmarMail,
     recuperarPassword,
     comprobarTokenPasword,
-    crearNuevoPassword
+    crearNuevoPassword,
+    login
 }
