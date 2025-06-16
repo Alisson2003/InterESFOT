@@ -4,7 +4,7 @@ dotenv.config()
 
 
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    //service: 'gmail',
     host: process.env.HOST_MAILTRAP,
     port: process.env.PORT_MAILTRAP,
     auth: {
@@ -18,8 +18,8 @@ const sendMailToRegister = (userMail, token) => {
     let mailOptions = {
         from: process.env.USER_MAILTRAP,
         to: userMail,
-        subject: "INTER_ESFOT - 😺",
-        html: `<p>Hola, haz clic <a href="${process.env.URL_BACKEND}confirmar/${token}">aquí</a> para confirmar tu cuenta.</p>
+        subject: "INTER_ESFOT - 💪🏆",
+        html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirmar/${token}">aquí</a> para confirmar tu cuenta.</p>
         <hr>
         <footer>La comunidad ESFOTDIANA te da la más cordial bienvenida.</footer>
         `
@@ -35,15 +35,15 @@ const sendMailToRegister = (userMail, token) => {
 }
 const sendMailToRecoveryPassword = async(userMail,token)=>{
     let info = await transporter.sendMail({
-    from: 'admin@vet.com',
+    from: 'admin@esfot.com',
     to: userMail,
     subject: "Correo para reestablecer tu contraseña",
     html: `
-    <h1>SmartVET - 🐶 😺</h1>
+    <h1>INTER_ESFOT - 💪 🏆</h1>
     <hr>
-    <a href=${process.env.URL_BACKEND}reset/${token}>Clic para reestablecer tu contraseña</a>
+    <a href=${process.env.URL_FRONTEND}reset/${token}>Clic para reestablecer tu contraseña</a>
     <hr>
-    <footer>El equipo de SmartVET te da la más cordial bienvenida.</footer>
+    <footer>La comunidad ESFOTDIANA te da la más cordial bienvenida.</footer>
     `
     });
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
