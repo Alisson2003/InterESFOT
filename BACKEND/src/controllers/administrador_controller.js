@@ -1,23 +1,34 @@
 import Administrador from "../models/Administrador.js"
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodemailler.js"
 
-const registro = async (req,res)=>{
-    const {email,password} = req.body
-    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-        const administradorEmailBDD = await Administrador.findOne({email})
+const registro = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (Object.values(req.body).includes(""))
+            return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
 
-    if(administradorEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
-        const nuevoAdministrador = await Administrador(req.body)
-    
-    nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password)
+        const administradorEmailBDD = await Administrador.findOne({ email });
 
-    const token = nuevoAdministrador.crearToken()
-    await sendMailToRegister(email,token)
+        if (administradorEmailBDD)
+            return res.status(400).json({ msg: "Lo sentimos, el email ya se encuentra registrado" });
 
-    await nuevoAdministrador.save()
-    res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
+        const nuevoAdministrador = await Administrador(req.body);
 
-}
+        nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password);
+
+        const token = nuevoAdministrador.crearToken();
+        await sendMailToRegister(email, token);
+
+        await nuevoAdministrador.save();
+
+        res.status(200).json({ msg: "Revisa tu correo electrónico para confirmar tu cuenta" });
+    } catch (error) {
+        console.error("❌ Error en registro:", error);
+        res.status(500).json({ msg: "Error interno del servidor" });
+    }
+};
+
 
 
 const confirmarMail = async (req,res)=>{
