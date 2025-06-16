@@ -6,7 +6,6 @@ import routerAdministrador from './routers/administrador_routes.js';
 
 
 
-
 // Inicializaciones
 const app = express()
 dotenv.config()
