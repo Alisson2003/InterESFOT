@@ -3,8 +3,9 @@ import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodema
 //import { crearTokenJWT } from "../middlewares/JWT.js"
 
 
-/*const registro = async (req,res)=>{
+const registro = async (req,res)=>{
     const {email,password} = req.body
+    console.log('📥 req.body:', req.body); 
     if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
         const administradorEmailBDD = await Administrador.findOne({email})
 
@@ -18,40 +19,7 @@ import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodema
 
     await nuevoAdministrador.save()
     res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
-}*/
-const registro = async (req,res)=>{
-//1
-// voy a desestructurar
-const {email,password}=req.body;   // lo va a mandar en formato json
-console.log('📥 req.body:', req.body); 
-// 2
-// vamosa hacer una validacion
-if(Object.values(req.body).includes(" ")) return res.status(400).json    // status= codigo, res=respuesta
-({msg:'TODOS LOS CAMPOS SON OBLIGATORIOS'})
-
-const administradorEmailBDD=await Administrador.findOne({email})  // es una promesa el finone
-
-// validacion continua
-if (administradorEmailBDD) return res.status(400).json({msg:"el email ya esta registrado"})
-
-// 3
-const nuevoAdministrador= await Administrador(req.body)
-
-nuevoAdministrador.password=await nuevoAdministrador.encrypPassword(password)
-
-
-const token = nuevoAdministrador.crearToken()
-
-console.log(token)
-await sendMailToRegister(email,token)
-
-await nuevoAdministrador.save()  // con esto quiero decir que se me guarde en la BDD----- save es una promesa
-
-//4 
-res.status(200).json({msg:"verifica tu correo"})   // quiere decir que todo esta bien
 }
-
-
 
 const confirmarMail = async (req,res)=>{
     if (!(req.params.token)) return res.status(400).json({msg:"Lo sentimos, no se puede validar la cuenta"})
