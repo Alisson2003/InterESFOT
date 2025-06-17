@@ -111,7 +111,7 @@ const login = async(req,res)=>{
     if(!verificarPassword) 
         return res.status(401).json({msg:"Lo sentimos, el password no es el correcto"})
     
-    const {nombre,apellido,direccion,telefono,_id,rol} = administradorBDD
+    const {nombre,apellido,celular,_id,rol} = administradorBDD
     
     res.status(200).json({
         nombre,
