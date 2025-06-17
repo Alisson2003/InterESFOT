@@ -1,6 +1,6 @@
 import Administrador from "../models/Administrador.js"
 import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodemailler.js"
-//import { crearTokenJWT } from "../middlewares/JWT.js"
+import { crearTokenJWT } from "../middlewares/JWT.js"
 import mongoose from "mongoose"
 
 
@@ -105,7 +105,8 @@ const login = async(req,res)=>{
     if(!administradorBDD) 
         return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
     
-    const verificarPassword = await Administrador.matchPassword(password)
+    const verificarPassword = await administradorBDD.matchPassword(password)
+
 
     if(!verificarPassword) 
         return res.status(401).json({msg:"Lo sentimos, el password no es el correcto"})
@@ -115,10 +116,9 @@ const login = async(req,res)=>{
     res.status(200).json({
         nombre,
         apellido,
-        telefono,
+        celular,
         _id,
-        rol,
-        direccion
+        rol
     })
 }
 
