@@ -93,7 +93,7 @@ const crearNuevoPassword = async (req,res)=>{
 
 
 const login = async(req,res)=>{
-    const {email,password} = req.body
+    const {email,password} = req.body;
     if (Object.values(req.body).includes("")) 
         return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
         
@@ -111,7 +111,7 @@ const login = async(req,res)=>{
         return res.status(401).json({msg:"Lo sentimos, el password no es el correcto"})
     
     const {nombre,apellido,direccion,telefono,_id,rol} = administradorBDD
-
+    
     res.status(200).json({
         nombre,
         apellido,
