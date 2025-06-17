@@ -70,7 +70,7 @@ let transporter = nodemailer.createTransport({
 // Enviar correo de registro
 const sendMailToRegister = (userMail, token) => {
     let mailOptions = {
-        from: 'admin@esfot.com',
+        from: process.env.USER_MAILTRAP,
         to: userMail,
         subject: "INTER_ESFOT-💪",
         html: `<p>¡Registro exitoso! 🎉
@@ -92,7 +92,7 @@ const sendMailToRegister = (userMail, token) => {
 // Enviar correo para recuperación de contraseña
 const sendMailToRecoveryPassword = async(userMail, token) => {
     let info = await transporter.sendMail({
-        from: 'admin@esfot.com',
+        from: process.env.USER_MAILTRAP,
         to: userMail,
         subject: "Correo para reestablecer tu contraseña",
         html: `
