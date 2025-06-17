@@ -33,6 +33,7 @@ const sendMailToRegister = (userMail, token) => {
         }
     })
 }
+
 const sendMailToRecoveryPassword = async(userMail,token)=>{
     let info = await transporter.sendMail({
     from: 'admin@esfot.com',
