@@ -5,10 +5,6 @@ import connection from './database.js';
 connection()
 
 app.listen(app.get('port'), () => {
-    console.log(`Server ok on http://localhost:${app.get('port')}`);
+    console.log(`✅ Server on port ${app.get('port')}`);
 });
 
-
-app.listen(app.get('port'), () => {
-    console.log(`✅ Server on https://interesfot.onrender.com`);
-});
