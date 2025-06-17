@@ -45,14 +45,29 @@ const confirmarMail = async (req,res)=>{
 }*/
 
 const confirmarMail = async (req, res) => {
-    const token = req.params.token
-    const administradorBDD = await Administrador.findOne({token})
-    if(!administradorBDD?.token) return res.status(404).json({msg:"La cuenta ya ha sido confirmada"})
-    administradorBDD.token = null
-    administradorBDD.confirmEmail=true
-    await administradorBDD.save()
-    res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"}) 
-}
+    const { token } = req.params;
+
+    if (!token) {
+        return res.status(400).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
+    }
+
+    const administradorBDD = await Administrador.findOne({ token });
+
+    if (!administradorBDD) {
+        return res.status(404).json({ msg: "El token es inválido o la cuenta ya fue confirmada" });
+    }
+
+    if (administradorBDD.confirmEmail === true) {
+        return res.status(400).json({ msg: "La cuenta ya ha sido confirmada" });
+    }
+
+    administradorBDD.token = null;
+    administradorBDD.confirmEmail = true;
+
+    await administradorBDD.save();
+
+    return res.status(200).json({ msg: "Token confirmado, ya puedes iniciar sesión" });
+};
 
 // RECUPERAR CONTRASEÑA
 
