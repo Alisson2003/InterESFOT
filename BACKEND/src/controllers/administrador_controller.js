@@ -68,7 +68,8 @@ const comprobarTokenPasword = async (req,res)=>{
 
 const crearNuevoPassword = async (req,res)=>{
     //1
-    const {password, confirmpassword} = req.body
+    const {password, confirmpassword} = req.body;
+    const { token } = req.params;
     
     //2
     if(Object.values(req.body).includes("")) 
