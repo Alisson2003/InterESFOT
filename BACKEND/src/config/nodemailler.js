@@ -1,4 +1,3 @@
-
 import nodemailer from "nodemailer"
 import dotenv from 'dotenv'
 dotenv.config()
@@ -51,15 +50,14 @@ const sendMailToRecoveryPassword = async(userMail, token) => {
 }
 
 // Enviar correo genérico a usuario (por ejemplo, para confirmar cuenta)
-const sendMailToUser = (userMail, token) => {
-    let mailOptions = {
+let mailOptions = {
         from: process.env.USER_MAILTRAP,
         to: userMail,
-        subject: "INTER_ESFOT-💪",
+        subject: "SmartVET -🐶 😺",
         html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirm/${token}">aquí</a> para confirmar tu cuenta.</p>
-        <footer>¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟</footer>`
+        El equipo de SmartVET te da la más cordial bienvenida.
+        `
     }
-
 
 // Exports
 export {
