@@ -4,8 +4,9 @@ import connection from './database.js';
 // Conectar a la base de datos
 connection()
 
-const PORT = process.env.PORT || 3000;
+const PORT = app.get('port');
+
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
