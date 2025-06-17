@@ -99,7 +99,7 @@ const login = async(req,res)=>{
         
     const administradorBDD = await Administrador.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
     
-    if(administradorBDDBDD?.confirmEmail===false) 
+    if(administradorBDD?.confirmEmail===false) 
         return res.status(403).json({msg:"Lo sentimos, debe verificar su cuenta"})
     
     if(!administradorBDD) 
