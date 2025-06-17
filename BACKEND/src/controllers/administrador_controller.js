@@ -71,13 +71,17 @@ const crearNuevoPassword = async (req,res)=>{
     const {password, confirmpassword} = req.body
     
     //2
-    if(Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos,debes llenar todos los campos"})
+    if(Object.values(req.body).includes("")) 
+        return res.status(404).json({msg: "Lo sentimos,debes llenar todos los campos"})
 
-    if(password !== confirmpassword) return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
+    if(password !== confirmpassword) 
+        return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
 
     const administradorBDD = await Administrador.findOne({token:req.params.token})
 
-    if(administradorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    //if(administradorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    if(!administradorBDD) 
+        return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     //3 logica - dejando token nulo y encriptacion de contraseña
     administradorBDD.token = null
@@ -86,7 +90,6 @@ const crearNuevoPassword = async (req,res)=>{
     await administradorBDD.save()
 
     //4
-
     res.status(200).json({msg: "Felicitaciones, ya puedes iniciar sesion con tu nuevo password"})
 
 }
