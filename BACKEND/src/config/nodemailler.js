@@ -18,10 +18,10 @@ const sendMailToRegister = (userMail, token) => {
     let mailOptions = {
         from: process.env.USER_MAILTRAP,
         to: userMail,
-        subject: "INTER_ESFOT - 💪",
+        subject: "INTER_ESFOT-💪",
         html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirmar/${token}">aquí</a> para confirmar tu cuenta.</p>
         <hr>
-        <footer>La comunidad ESFOTDIANA te da la más cordial bienvenida.</footer>
+        <footer>La comunidad de la ESFOT te da la más cordial bienvenida.</footer>
         `
     }
 
@@ -39,7 +39,7 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     to: userMail,
     subject: "Correo para reestablecer tu contraseña",
     html: `
-    <h1>INTER_ESFOT - 💪 </h1>
+    <h1>INTER_ESFOT-💪</h1>
     <hr>
     <a href=${process.env.URL_FRONTEND}reset/${token}>Clic para reestablecer tu contraseña</a>
     <hr>
