@@ -26,9 +26,11 @@ const registro = async (req,res)=>{
     res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
 
 }
-/*
+
 const confirmarMail = async (req,res)=>{
     //1
+    const token = req.params.token
+    
     if (!(req.params.token)) return res.status(400).json({msg:"Lo sentimos, no se puede validar la cuenta"})
     //2
     const administradorBDD = await Administrador.findOne({token:req.params.token})
@@ -40,18 +42,7 @@ const confirmarMail = async (req,res)=>{
     await administradorBDD.save()
     //4
     res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"})
-}*/
-
-const confirmarMail = async (req,res)=>{
-    const token = req.params.token
-    const administradorBDD = await Administrador.findOne({token})
-    if(!administradorBDD?.token) return res.status(404).json({msg:"La cuenta ya ha sido confirmada"})
-    administradorBDD.token = null
-    administradorBDD.confirmEmail=true
-    await administradorBDD.save()
-    res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"}) 
 }
-
 // RECUPERAR CONTRASEÑA
 
 const recuperarPassword = async(req,res)=>{
