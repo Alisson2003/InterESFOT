@@ -50,14 +50,17 @@ const sendMailToRecoveryPassword = async(userMail, token) => {
 }
 
 // Enviar correo genérico a usuario (por ejemplo, para confirmar cuenta)
-let mailOptions = {
+const sendMailToUser = async (userMail, token) => {
+    let info = await transporter.sendMail({
         from: process.env.USER_MAILTRAP,
         to: userMail,
-        subject: "SmartVET -🐶 😺",
+        subject: "INTER_ESFOT-💪",
         html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirm/${token}">aquí</a> para confirmar tu cuenta.</p>
-        El equipo de SmartVET te da la más cordial bienvenida.
-        `
-    }
+        <p>¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟</p>`
+    });
+    console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
+}
+
 
 // Exports
 export {
