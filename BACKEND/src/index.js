@@ -8,7 +8,7 @@ app.listen(app.get('port'), () => {
     console.log(`Server ok on http://localhost:${app.get('port')}`);
 });
 
-/*
+
 app.listen(app.get('port'), () => {
     console.log(`✅ Server on https://interesfot.onrender.com`);
-});*/
+});
