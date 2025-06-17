@@ -25,7 +25,7 @@ const sendMailToRegister = (userMail, token) => {
         <br><a href="${process.env.URL_FRONTEND}confirmar/${token}">INICIAR</a></br>
         <footer>
         ¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟
-</footer>
+    </footer>
         `
     }
 
