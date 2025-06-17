@@ -122,7 +122,7 @@ const sendMailToUser = (userMail, token) => {
         } else {
             console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
         }
-    })
+    }),
 }
 
 // Exports
