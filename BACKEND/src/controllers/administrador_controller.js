@@ -19,17 +19,15 @@ import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodema
     await nuevoAdministrador.save()
     res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
 }*/
-/*
 const registro = async (req,res)=>{
-
 //1
 // voy a desestructurar
-const {email,password}=req.body   // lo va a mandar en formato json
+const {email,password}=req.body;   // lo va a mandar en formato json
+console.log('📥 req.body:', req.body); 
 // 2
 // vamosa hacer una validacion
 if(Object.values(req.body).includes(" ")) return res.status(400).json    // status= codigo, res=respuesta
 ({msg:'TODOS LOS CAMPOS SON OBLIGATORIOS'})
-
 
 const administradorEmailBDD=await Administrador.findOne({email})  // es una promesa el finone
 
@@ -52,43 +50,7 @@ await nuevoAdministrador.save()  // con esto quiero decir que se me guarde en la
 //4 
 res.status(200).json({msg:"verifica tu correo"})   // quiere decir que todo esta bien
 }
-*/
 
-const registro = async (req, res) => {
-    try {
-        console.log("📨 Petición en registro:", req.body); // 👈 Verifica que se recibe
-        const { email, password } = req.body;
-        
-        if (Object.values(req.body).includes("")) {
-            console.log("⚠️ Campos vacíos");
-            return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
-        }
-        
-        const administradorEmailBDD = await Administrador.findOne({ email });
-        
-        if (administradorEmailBDD) {
-            console.log("⚠️ Email ya registrado");
-            return res.status(400).json({ msg: "El email ya se encuentra registrado" });
-        }
-        
-        const nuevoAdministrador = await Administrador(req.body);
-        nuevoAdministrador.password = await nuevoAdministrador.encrypPassword(password);
-        const token = nuevoAdministrador.crearToken();
-        
-        console.log("📧 Token generado:", token);
-
-        // 👇 COMENTA ESTA LÍNEA TEMPORALMENTE para evitar error por correo
-        // await sendMailToRegister(email, token);
-
-        // 👇 COMENTA TAMBIÉN EL GUARDADO TEMPORALMENTE
-        // await nuevoAdministrador.save();
-
-        return res.status(200).json({ msg: "Hasta aquí funciona correctamente" });
-    } catch (error) {
-        console.log("❌ Error en registro:", error);
-        return res.status(500).json({ msg: "Error interno del servidor" });
-    }
-};
 
 
 const confirmarMail = async (req,res)=>{
