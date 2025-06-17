@@ -56,7 +56,7 @@ const sendMailToUser = (userMail, token) => {
         from: process.env.USER_MAILTRAP,
         to: userMail,
         subject: "INTER_ESFOT-💪",
-        html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirm/${token}">aquí</a> para confirmar tu cuenta.</p>
+        html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}Confirm/${token}">aquí</a> para confirmar tu cuenta.</p>
         <footer>¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟</footer>`
     }
 
