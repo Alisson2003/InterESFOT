@@ -22,7 +22,7 @@ const sendMailToRegister = (userMail, token) => {
         html: `<p>¡Registro exitoso! 🎉
         <br>Gracias por unirte a la comunidad de la ESFOT.</br>
         <brAhora solo falta un paso: haz clic en Iniciar y prepárate para disfrutar de experiencias mágicas con nosotros.</br>
-        <br><a href="${process.env.URL_FRONTEND}confirmar/${token}">INICIAR</a></br>
+        <br><a href="${process.env.URL_FRONTEND}confirm/${token}">INICIAR</a></br>
         <footer>
         ¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟
     </footer>
