@@ -16,13 +16,13 @@ let transporter = nodemailer.createTransport({
 const sendMailToRegister = (userMail, token) => {
 
     let mailOptions = {
-        from: 'admin@esfot.com',
+        from: process.env.USER_MAILTRAP,
         to: userMail,
         subject: "INTER_ESFOT-💪",
         html: `<p>¡Registro exitoso! 🎉
         <br>Gracias por unirte a la comunidad de la ESFOT.</br>
         <brAhora solo falta un paso: haz clic en Iniciar y prepárate para disfrutar de experiencias mágicas con nosotros.</br>
-        <br><a href="${process.env.URL_FRONTEND}confirm/${token}">INICIAR</a></br>
+        <br><a href="${process.env.URL_FRONTEND}confirmar/${token}">INICIAR</a></br>
         <footer>
         ¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟
     </footer>
@@ -37,6 +37,19 @@ const sendMailToRegister = (userMail, token) => {
         }
     })
 }
+
+const sendMailToUser = (userMail, token) => {
+
+    let mailOptions = {
+        from: process.env.USER_MAILTRAP,
+        to: userMail,
+        subject: "SmartVET -🐶 😺",
+        html: `<p>Hola, haz clic <a href="${process.env.URL_FRONTEND}confirm/${token}">aquí</a> para confirmar tu cuenta.</p>
+        El equipo de SmartVET te da la más cordial bienvenida.
+        `
+    }
+}
+    
 
 const sendMailToRecoveryPassword = async(userMail,token)=>{
     let info = await transporter.sendMail({
