@@ -40,7 +40,7 @@ const sendMailToRegister = (userMail, token) => {
 
 const sendMailToRecoveryPassword = async(userMail,token)=>{
     let info = await transporter.sendMail({
-    from: 'admin@esfot.com',
+    from: process.env.USER_MAILTRAP,
     to: userMail,
     subject: "Correo para reestablecer tu contraseña",
     html: `
