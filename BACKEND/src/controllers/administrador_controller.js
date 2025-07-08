@@ -4,7 +4,6 @@ import { crearTokenJWT } from "../middlewares/JWT.js"
 import mongoose from "mongoose"
 
 
-
 const registro = async (req,res)=>{
     const {email,password} = req.body
     console.log('📥 req.body:', req.body); 
