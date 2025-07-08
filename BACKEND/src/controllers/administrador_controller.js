@@ -116,7 +116,11 @@ const login = async(req,res)=>{
     
     const {nombre,apellido,celular,_id,rol} = administradorBDD
     
+    const token = crearTokenJWT(veterinarioBDD._id,veterinarioBDD.rol)
+
+    
     res.status(200).json({
+        token,
         nombre,
         apellido,
         celular,
@@ -125,11 +129,18 @@ const login = async(req,res)=>{
     })
 }
 
+const perfil =(req,res)=>{
+		const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.veterinarioBDD
+    res.status(200).json(datosPerfil)
+}
+
+
 export {
     registro,
     confirmarMail,
     recuperarPassword,
     comprobarTokenPasword,
     crearNuevoPassword,
-    login
+    login,
+    perfil
 }
