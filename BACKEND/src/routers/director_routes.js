@@ -4,7 +4,7 @@ import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, recuperarPass
 const router = Router()
 
 router.post('/registro',registro)
-router.get('/confirmar/:token',confirmarMail)
+router.get('/confirm/:token',confirmarMail)
 
 router.post('/recuperarpassword',recuperarPassword)
 router.get('/recuperarpassword/:token',comprobarTokenPasword)
