@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro } 
-from '../controllers/veterinario_controller.js'
+from '../controllers/administrador_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 
 const router = Router()

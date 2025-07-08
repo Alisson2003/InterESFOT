@@ -116,7 +116,7 @@ const login = async(req,res)=>{
     
     const {nombre,apellido,celular,_id,rol} = administradorBDD
     
-    const token = crearTokenJWT(veterinarioBDD._id,veterinarioBDD.rol)
+    const token = crearTokenJWT(administradorBDD._id,administradorBDD.rol)
 
     
     res.status(200).json({
@@ -130,7 +130,7 @@ const login = async(req,res)=>{
 }
 
 const perfil =(req,res)=>{
-		const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.veterinarioBDD
+		const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.administradorBDD
     res.status(200).json(datosPerfil)
 }
 
