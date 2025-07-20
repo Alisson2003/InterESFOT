@@ -65,33 +65,35 @@ const comprobarTokenPasword = async (req,res)=>{
 }
 
 
-const crearNuevoPassword = async (req,res)=>{
-    //1
-    const {password, confirmpassword} = req.body
-    
-    //2
-    if(Object.values(req.body).includes("")) 
-        return res.status(404).json({msg: "Lo sentimos,debes llenar todos los campos"})
+const crearNuevoPassword = async (req, res) => {
+    try {
+        const { password, confirmpassword } = req.body;
 
-    if(password !== confirmpassword) 
-        return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
+        if (Object.values(req.body).includes("")) {
+            return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+        }
 
-    const administradorBDD = await Administrador.findOne({token:req.params.token})
+        if (password !== confirmpassword) {
+            return res.status(404).json({ msg: "Lo sentimos, los password no coinciden" });
+        }
 
-    //if(administradorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
-    if(!administradorBDD) 
-        return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+        const administradorBDD = await Administrador.findOne({ token: req.params.token });
 
-    //3 logica - dejando token nulo y encriptacion de contraseña
-    administradorBDD.token = null
-    administradorBDD.password = await administradorBDD.encrypPassword(password)
+        if (!administradorBDD) {
+            return res.status(404).json({ msg: "Lo sentimos, no se puede validar la cuenta" });
+        }
 
-    await administradorBDD.save()
+        administradorBDD.token = null;
+        administradorBDD.password = await administradorBDD.encrypPassword(password);
+        await administradorBDD.save();
 
-    //4
-    res.status(200).json({msg: "Felicitaciones, ya puedes iniciar sesion con tu nuevo password"})
+        res.status(200).json({ msg: "Felicitaciones, ya puedes iniciar sesión con tu nuevo password" });
+    } catch (error) {
+        console.error("Error al cambiar contraseña:", error);
+        res.status(500).json({ msg: "Error interno del servidor" });
+    }
+};
 
-}
 
 const login = async(req,res)=>{
     const {email,password} = req.body;
