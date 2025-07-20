@@ -68,7 +68,6 @@ const comprobarTokenPasword = async (req,res)=>{
 const crearNuevoPassword = async (req,res)=>{
     //1
     const {password, confirmpassword} = req.body;
-    const { token } = req.params;
     
     //2
     if(Object.values(req.body).includes("")) 
@@ -79,8 +78,8 @@ const crearNuevoPassword = async (req,res)=>{
 
     const administradorBDD = await Administrador.findOne({token:req.params.token})
 
-    //if(administradorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
-    if(!administradorBDD) 
+    if(administradorBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
+    //if(!administradorBDD) 
         return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
 
     //3 logica - dejando token nulo y encriptacion de contraseña
@@ -93,7 +92,6 @@ const crearNuevoPassword = async (req,res)=>{
     res.status(200).json({msg: "Felicitaciones, ya puedes iniciar sesion con tu nuevo password"})
 
 }
-
 
 const login = async(req,res)=>{
     const {email,password} = req.body;
@@ -118,7 +116,6 @@ const login = async(req,res)=>{
     
     const token = crearTokenJWT(administradorBDD._id,administradorBDD.rol)
 
-    
     res.status(200).json({
         token,
         nombre,
