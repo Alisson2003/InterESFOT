@@ -132,9 +132,6 @@ const perfil =(req,res)=>{
     res.status(200).json(datosPerfil)
 }
 
-import mongoose from "mongoose"
-
-
 const actualizarPerfil = async (req,res)=>{
     const {id} = req.params
     const {nombre,apellido,direccion,celular,email} = req.body
@@ -152,7 +149,7 @@ const actualizarPerfil = async (req,res)=>{
 
     if (administradorBDD.email != email)
     {
-        const administradorBDDMail = await Veterinario.findOne({email})
+        const administradorBDDMail = await Administrador.findOne({email})
         if (administradorBDDMail)
         {
             return res.status(404).json({msg:`Lo sentimos, el email existe ya se encuentra registrado`})  
