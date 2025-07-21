@@ -67,13 +67,13 @@ const comprobarTokenPasword = async (req,res)=>{
 const crearNuevoPassword = async (req,res)=>{
     //1
     const {password, confirmpassword} = req.body
-    
-    //2
-    if(Object.values(req.body).includes("")) 
-        return res.status(404).json({msg: "Lo sentimos,debes llenar todos los campos"})
 
-    if(password !== confirmpassword) 
-        return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
+    //2
+    if (Object.values(req.body).includes("")) 
+        return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    
+    if(password != confirmpassword) 
+        return res.status(404).json({msg:"Lo sentimos, los passwords no coinciden"})
 
     const administradorBDD = await Administrador.findOne({token:req.params.token})
 
