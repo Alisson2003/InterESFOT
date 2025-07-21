@@ -13,6 +13,10 @@ const administradorSchema = new Schema({
         type:String,
         required:true,
         trim:true
+    },direccion:{
+        type:String,
+        trim:true,
+        default:null
     },
     celular:{
         type:String,
