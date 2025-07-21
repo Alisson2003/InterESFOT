@@ -24,8 +24,10 @@ const verificarTokenJWT = async (req, res, next) => {
     }
 }
 
+
 export { 
     crearTokenJWT,
     verificarTokenJWT 
 }
+
 

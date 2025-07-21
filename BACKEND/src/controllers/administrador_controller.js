@@ -132,6 +132,42 @@ const perfil =(req,res)=>{
     res.status(200).json(datosPerfil)
 }
 
+import mongoose from "mongoose"
+
+
+const actualizarPerfil = async (req,res)=>{
+    const {id} = req.params
+    const {nombre,apellido,direccion,celular,email} = req.body
+
+    if( !mongoose.Types.ObjectId.isValid(id) ) 
+        return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
+
+    if (Object.values(req.body).includes("")) 
+        return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+
+    const administradorBDD = await Administrador.findById(id)
+
+    if(!administradorBDD) 
+        return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
+
+    if (administradorBDD.email != email)
+    {
+        const administradorBDDMail = await Veterinario.findOne({email})
+        if (administradorBDDMail)
+        {
+            return res.status(404).json({msg:`Lo sentimos, el email existe ya se encuentra registrado`})  
+        }
+    }
+    administradorBDD.nombre = nombre ?? administradorBDD.nombre
+    administradorBDD.apellido = apellido ?? administradorBDD.apellido
+    administradorBDD.direccion = direccion ?? administradorBDD.direccion
+    administradorBDD.celular = celular ?? administradorBDD.celular
+    administradorBDD.email = email ?? administradorBDD.email
+    await administradorBDD.save()
+    console.log(administradorBDD)
+    res.status(200).json(administradorBDD)
+}
+
 
 export {
     registro,
@@ -140,5 +176,6 @@ export {
     comprobarTokenPasword,
     crearNuevoPassword,
     login,
-    perfil
+    perfil,
+    actualizarPerfil
 }
