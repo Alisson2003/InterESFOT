@@ -135,18 +135,10 @@ const perfil =(req,res)=>{
 const actualizarPerfil = async (req,res)=>{
     const {id} = req.params
     const {nombre,apellido,direccion,celular,email} = req.body
-
-    if( !mongoose.Types.ObjectId.isValid(id) ) 
-        return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
-
-    if (Object.values(req.body).includes("")) 
-        return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-
-    const administradorBDD = await Administrador.findById(id)
-
-    if(!administradorBDD) 
-        return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
-
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
+    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    const administradorBDD = await Admistrador.findById(id)
+    if(!administradorBDD) return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
     if (administradorBDD.email != email)
     {
         const administradorBDDMail = await Administrador.findOne({email})
