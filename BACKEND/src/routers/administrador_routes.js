@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { actualizarPerfil, comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, 
+import {actualizarPassword, actualizarPerfil, comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, 
 perfil, recuperarPassword, registro } from '../controllers/administrador_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 
@@ -17,6 +17,6 @@ router.post('/login',login)
 router.get('/perfil',verificarTokenJWT,perfil)
 router.put('/administrador/:id',verificarTokenJWT,actualizarPerfil)
 
-
+router.put('/administrador/actualizarpassword/:id',verificarTokenJWT,actualizarPassword)
 
 export default router

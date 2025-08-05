@@ -157,6 +157,15 @@ const actualizarPerfil = async (req,res)=>{
     res.status(200).json(administradorBDD)
 }
 
+const actualizarPassword = async (req,res)=>{
+    const administradorBDD = await Administrador.findById(req.administradorBDD._id)
+    if(!administradorBDD) return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
+    const verificarPassword = await administradorBDD.matchPassword(req.body.passwordactual)
+    if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
+    administradorBDD.password = await administradorBDD.encrypPassword(req.body.passwordnuevo)
+    await administradorBDD.save()
+    res.status(200).json({msg:"Password actualizado correctamente"})
+}
 
 export {
     registro,
@@ -166,5 +175,6 @@ export {
     crearNuevoPassword,
     login,
     perfil,
-    actualizarPerfil
+    actualizarPerfil,
+    actualizarPassword
 }
