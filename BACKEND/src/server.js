@@ -25,17 +25,6 @@ app.use(express.urlencoded({ extended: true })); // Para poder recibir datos en 
 // Configuración del puerto
 app.set('port', process.env.PORT || 3000);
 
-// Variables globales
-
-// Rutas para administradores
-app.use('/api', routerAdministrador);
-
-// Rutas 
-app.get('/', (req, res) => {
-    res.send("Server on");
-});
-
-
 // Inicializaciones
 cloudinary.config({
     cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
@@ -49,10 +38,18 @@ app.use(fileUpload({
     limits: { fileSize: 10 * 1024 * 1024 }, // hasta 10MB
 }))
 
+// Variables globales
+
+// Rutas para administradores
+app.use('/api', routerAdministrador);
+
 // Rutas para Director
-app.use('/api',routerDirector);+
+app.use('/api',routerDirector);
 
-
+// Rutas 
+app.get('/', (req, res) => {
+    res.send("Server on");
+});
 
 
 // Manejo de una ruta que no sea encontrada
