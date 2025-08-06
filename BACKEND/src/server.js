@@ -35,8 +35,6 @@ app.get('/', (req, res) => {
     res.send("Server on");
 });
 
-// Manejo de una ruta que no sea encontrada
-app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"));
 
 // Inicializaciones
 cloudinary.config({
@@ -45,14 +43,19 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-
 app.use(fileUpload({
     useTempFiles : true,
     tempFileDir : './uploads'
 }))
 
 // Rutas para Director
-app.use('/api',routerDirector);
+app.use('/api',routerDirector);+
+
+
+
+
+// Manejo de una ruta que no sea encontrada
+app.use((req, res) => res.status(404).send("Endpoint no encontrado - 404"));
 
 
 // Exportar la instancia de express por medio de app
