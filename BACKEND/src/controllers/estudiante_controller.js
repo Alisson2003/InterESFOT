@@ -168,7 +168,8 @@ const actualizarEstudiante = async (req, res) => {
 
 const loginEstudiante = async(req,res)=>{
     
-    const {emailEstudiante, passwordEstudiante} = req.body    if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    const {emailEstudiante, passwordEstudiante} = req.body;   
+    if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
     const estudianteBDD = await Estudiante.findOne({emailEstudiante})
     if(!estudianteBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
     const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante)
@@ -180,7 +181,7 @@ const loginEstudiante = async(req,res)=>{
         rol,
         _id
     })
-    
+
 }
 
 const perfilEstudiante = (req, res) => {
