@@ -18,9 +18,10 @@ const registrarEstudiante = async(req,res)=>{
 
     const nuevoEstudiante = new Estudiante({
         ...req.body,
-        passwordEstudiante: await Estudiante.prototype.encrypPassword(password),
         administrador: req.administradorBDD._id
     })
+
+    nuevoEstudiante.passwordEstudiante = await nuevoEstudiante.encrypPassword(password)
 
     if(req.files?.imagen){
         const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath,{folder:'Estudiantes'})
