@@ -22,8 +22,8 @@ const registrarEstudiante= async(req,res) => {
 
     const nuevoEstudiante= new Estudiante({
         ...req.body, 
-        passwordPropietario: await Estudiante.prototype.encrypPassword("ESFOT"+password),
-        estudiante: req.administradorBDD._id
+        passwordEstudiante: await Estudiante.prototype.encrypPassword("ESFOT"+password),
+        administrador: req.administradorBDD._id
     })
 
     if(req.files?.imagen){
@@ -120,7 +120,7 @@ const actualizarEstudiante = async(req,res)=>{
 
 
 const loginEstudiante = async(req,res)=>{
-    const {email:emailEstudiante,password:passwordEstudiante} = req.body
+    const {email:emailEstudiante, password:passwordEstudiante} = req.body;
     if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
     const estudianteBDD = await Estudiante.findOne({emailEstudiante})
     if(!estudianteBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
