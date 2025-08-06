@@ -1,7 +1,9 @@
 import {Router} from 'express'
-import { eliminarDirector, detalleDirector, listarDirectores, registrarDirector, actualizarDirector } from '../controllers/director_controller.js'
+import { loginDirector, eliminarDirector, detalleDirector, listarDirectores, registrarDirector, actualizarDirector } from '../controllers/director_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 const router = Router()
+
+router.post('/director/login',loginDirector)
 
 router.post("/director/registro",verificarTokenJWT, registrarDirector)
 

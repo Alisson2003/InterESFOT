@@ -3,6 +3,7 @@ import { sendMailToOwner } from "../config/nodemailler.js"
 import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
 import mongoose from "mongoose"
+import { crearTokenJWT } from "../middlewares/JWT.js"
 
 const registrarDirector = async(req,res)=>{
 
@@ -128,10 +129,32 @@ const actualizarDirector = async (req, res) => {
     res.status(200).json({ msg: "Actualización exitosa del director" });
 };
 
+
+const loginDirector = async(req,res)=>{
+
+
+    const {email:emailDirector,password:passwordPropietario} = req.body
+    if (Object.values(req.body).includes("")) 
+        return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    const directorBDD = await Director.findOne({emailDirector})
+    if(!directorBDD) 
+        return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
+    const verificarPassword = await directorBDD.matchPassword(passwordDirector)
+    if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
+    const token = crearTokenJWT(directorBDD._id,directorBDD.rol)
+	const {_id,rol} = directorBDD
+    res.status(200).json({
+        token,
+        rol,
+        _id
+    })
+}
+
 export{
     registrarDirector,
     listarDirectores,
     detalleDirector,
     eliminarDirector,
-    actualizarDirector
+    actualizarDirector,
+    loginDirector
 }
