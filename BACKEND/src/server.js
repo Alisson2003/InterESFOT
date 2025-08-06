@@ -11,7 +11,24 @@ import routerEstudiante from './routers/estudiante_routes.js';
 // Importar las rutas de deportes
 import routerDeportes from './routers/deportes_routes.js';
 
+//Login con Google
+import session from 'express-session';
+import passport from 'passport';
+import './src/config/passport.js';
+import authRoutes from './routers/authRoutes.js';
+
 dotenv.config();
+
+// Configurar sesiones
+app.use(session({
+    secret: 'claveSuperSecreta123', // cambia esto por una clave segura
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Inicializar passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Inicializaciones
 const app = express();
@@ -51,6 +68,8 @@ app.use('/api',routerEstudiante);
 
 // Rutas para deportes
 app.use('/api',routerDeportes);
+
+app.use('/auth', authRoutes);
 
 // Rutas 
 app.get('/', (req, res) => {
