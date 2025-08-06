@@ -35,13 +35,19 @@ app.get('/', (req, res) => {
     res.send("Server on");
 });
 
-
+/*
 // Inicializaciones
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
-})
+})*/
+
+console.log("🌩️ Cloudinary config:");
+console.log("cloud_name:", process.env.CLOUDINARY_CLOUD_NAME);
+console.log("api_key:", process.env.CLOUDINARY_API_KEY ? "OK" : "MISSING");
+console.log("api_secret:", process.env.CLOUDINARY_API_SECRET ? "OK" : "MISSING");
+
 
 app.use(fileUpload({
     useTempFiles : true,
