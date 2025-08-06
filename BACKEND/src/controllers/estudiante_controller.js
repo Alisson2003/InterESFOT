@@ -1,4 +1,4 @@
-import { sendMailToOwner } from "../config/nodemailer.js"
+import { sendMailToOwner } from "../config/nodemailler.js"
 import Estudiante from "../models/Estudiante.js"
 import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
@@ -86,8 +86,6 @@ const detalleEstudiante = async(req,res)=>{
         tratamientos
     })
 }
-
-
 
 
 const eliminarEstudiante = async (req,res)=>{
