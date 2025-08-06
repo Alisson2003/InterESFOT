@@ -114,21 +114,32 @@ const actualizarEstudiante = async (req, res) => {
     res.status(200).json({ msg: "Actualización exitosa del estudiante" });
 };
 
-const loginEstudiante = async(req,res)=>{
-    const {email:emailEstudiante,password:passwordEstudiante} = req.body
-    if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const estudianteBDD = await Estudiante.findOne({emailEstudinate})
-    if(!estudianteBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
-    const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante)
-    if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
-    const token = crearTokenJWT(estudianteBDD._id,estudianteBDD.rol)
-	const {_id,rol} = estudianteBDD
-    res.status(200).json({
-        token,
-        rol,
-        _id
-    })
-}
+const loginEstudiante = async (req, res) => {
+    console.log("REQ.BODY:", req.body);
+
+    const { email: emailEstudiante, password: passwordEstudiante } = req.body;
+
+    console.log("EMAIL:", emailEstudiante);
+    console.log("PASSWORD:", passwordEstudiante);
+
+    if (!emailEstudiante || !passwordEstudiante) {
+        return res.status(400).json({ msg: "Faltan campos" });
+    }
+
+    const estudianteBDD = await Estudiante.findOne({ emailEstudiante });
+
+    if (!estudianteBDD) {
+        return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante);
+    if (!verificarPassword) {
+        return res.status(401).json({ msg: "Contraseña incorrecta" });
+    }
+
+    const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol);
+    res.json({ token, rol: estudianteBDD.rol, _id: estudianteBDD._id });
+};
 
 const perfilEstudiante = (req, res) => {
     
