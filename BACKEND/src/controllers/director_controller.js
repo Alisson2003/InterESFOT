@@ -131,9 +131,7 @@ const actualizarDirector = async (req, res) => {
 
 
 const loginDirector = async(req,res)=>{
-
-
-    const {email:emailDirector,password:passwordPropietario} = req.body
+    const {email:emailDirector,password:passwordDirector} = req.body
     if (Object.values(req.body).includes("")) 
         return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
     const directorBDD = await Director.findOne({emailDirector})
@@ -149,6 +147,7 @@ const loginDirector = async(req,res)=>{
         _id
     })
 }
+
 
 export{
     registrarDirector,
