@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import Administrador from "../models/Administrador.js"
+import Director from "../models/Director.js"
 
 const crearTokenJWT = (id, rol) => {
 
@@ -17,6 +18,9 @@ const verificarTokenJWT = async (req, res, next) => {
         const { id, rol } = jwt.verify(token,process.env.JWT_SECRET)
         if (rol === "administrador") {
             req.administradorBDD = await Administrador.findById(id).lean().select("-password")
+            next()
+        }else{
+            req.pacienteBDD = await Paciente.findById(id).lean().select("-password")
             next()
         }
     } catch (error) {

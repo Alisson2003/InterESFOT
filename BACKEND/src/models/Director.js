@@ -2,68 +2,80 @@ import {Schema, model} from 'mongoose';
 import bcrypt from "bcryptjs";
 
 const directorSchema = new Schema({
-    nombre:{
+    nombreDirector:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
-    apellido:{
+    apellidoDirector:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
-    celular:{
+    celularDirector:{
         type:String,
         trim:true,
         default:null
     },
-    email:{
+    oficinaDirector:{
         type:String,
-        require:true,
         trim:true,
-                unique:true
-    },
-    password:{
+        default:null
+    }
+    ,
+    emailDirector:{
         type:String,
-        require:true
+        required:true,
+        trim:true,
+        unique:true
     },
-    status:{
+    passwordDirector:{
+        type:String,
+        required:true
+    },
+    nombreFacultad:{
+        type:String,
+        required:true,
+        trim:true
+    },
+    avatarFacultad:{
+        type:String,
+        trim:true
+    },
+    avatarFacultadID:{
+        type:String,
+        trim:true
+    },
+    periodoDirector:{
+        type:String,
+        required:true,
+        trim:true
+    },
+    estadoDirector:{
         type:Boolean,
         default:true
-    },
-    token:{
-        type:String,
-        default:null
-    },
-    confirmEmail:{
-        type:Boolean,
-        default:false
     },
     rol:{
         type:String,
         default:"director",
+    },
+    administrador:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Administrador',
     }
 },{
     timestamps:true
 })
 
-// Método para cifrar el password del veterinario
+// Método para cifrar el password del propietario
 directorSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
-    const passwordEncryp = await bcrypt.hash(password,salt)
-    return passwordEncryp
+    return bcrypt.hash(password, salt)
 }
 
 // Método para verificar si el password ingresado es el mismo de la BDD
 directorSchema.methods.matchPassword = async function(password){
-    const response = await bcrypt.compare(password,this.password)
-    return response
+    return bcrypt.compare(password, this.passwordPropietario)
 }
 
-// Método para crear un token 
-directorSchema.methods.crearToken = function(){
-    const tokenGenerado = this.token = Math.random().toString(36).slice(2)
-    return tokenGenerado
-}
-
-export default model('Director',directorSchema)
+export default model('Paciente',directorSchema);
