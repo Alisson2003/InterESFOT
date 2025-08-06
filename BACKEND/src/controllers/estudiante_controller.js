@@ -114,7 +114,7 @@ const actualizarEstudiante = async (req, res) => {
     await Estudiante.findByIdAndUpdate(id, req.body, { new: true });
     res.status(200).json({ msg: "Actualización exitosa del estudiante" });
 };
-
+/*
 const loginEstudiante = async (req, res) => {
     console.log("REQ.BODY:", req.body);
 
@@ -140,6 +140,48 @@ const loginEstudiante = async (req, res) => {
 
     const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol);
     res.json({ token, rol: estudianteBDD.rol, _id: estudianteBDD._id });
+};*/
+
+
+const loginEstudiante = async (req, res) => {
+    try {
+        const { email: rawEmail, password: rawPassword } = req.body;
+
+        // Validar campos
+        if (!rawEmail || !rawPassword) {
+            return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+        }
+
+        const emailEstudiante = rawEmail.trim().toLowerCase();
+        const passwordEstudiante = rawPassword.trim();
+
+        const estudianteBDD = await Estudiante.findOne({ emailEstudiante });
+
+        if (!estudianteBDD) {
+            return res.status(404).json({ msg: "El estudiante no se encuentra registrado" });
+        }
+
+        const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante);
+
+        if (!verificarPassword) {
+            return res.status(401).json({ msg: "Contraseña incorrecta" });
+        }
+
+        const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol);
+        const { _id, rol, nombreEstudiante } = estudianteBDD;
+
+        return res.status(200).json({
+            msg: "Login exitoso",
+            token,
+            rol,
+            _id,
+            nombreEstudiante
+        });
+
+    } catch (error) {
+        console.error("Error en loginEstudiante:", error);
+        return res.status(500).json({ msg: "Error interno del servidor" });
+    }
 };
 
 const perfilEstudiante = (req, res) => {
