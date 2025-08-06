@@ -68,8 +68,6 @@ estudianteSchema.methods.encrypPassword = async function(password) {
 
 // Método para verificar si el password ingresado es el mismo de la BDD
 estudianteSchema.methods.matchPassword = async function(password) {
-    console.log("Password ingresado:", password)
-    console.log("Password cifrado en BD:", this.passwordEstudiante)
     return bcrypt.compare(password, this.passwordEstudiante)
 }
 
