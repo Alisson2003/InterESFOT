@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import Administrador from "../models/Administrador.js"
-import Director from "../models/Estudiante.js"
+import Estudiante from "../models/Estudiante.js"
 
 const crearTokenJWT = (id, rol) => {
 
@@ -20,7 +20,7 @@ const verificarTokenJWT = async (req, res, next) => {
             req.administradorBDD = await Administrador.findById(id).lean().select("-password")
             next()
         }else{
-            req.directorBDD = await Director.findById(id).lean().select("-password")
+            req.estudianteBDD = await Estudiante.findById(id).lean().select("-password")
             next()
         }
     } catch (error) {
