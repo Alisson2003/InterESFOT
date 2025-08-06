@@ -56,11 +56,14 @@ const estudianteSchema = new Schema({
     administrador: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Administrador',
-    }
+    },
+    deportes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Deporte'
+    }]
 }, {
     timestamps: true
 });
-
 
 estudianteSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)

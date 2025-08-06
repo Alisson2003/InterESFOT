@@ -8,6 +8,9 @@ import cloudinary from 'cloudinary'
 import fileUpload from "express-fileupload"
 import routerEstudiante from './routers/estudiante_routes.js';
 
+// Importar las rutas de deportes
+import routerDeportes from './routers/deportes_routes.js';
+
 dotenv.config();
 
 // Inicializaciones
@@ -45,6 +48,9 @@ app.use('/api', routerAdministrador);
 
 // Rutas para Director
 app.use('/api',routerEstudiante);
+
+// Rutas para deportes
+app.use('/api',routerDeportes);
 
 // Rutas 
 app.get('/', (req, res) => {
