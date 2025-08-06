@@ -4,7 +4,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
 import mongoose from "mongoose"
 import { crearTokenJWT } from "../middlewares/JWT.js"
-import Deportes from "../models/Deportes.js"
+//import Deportes from "../models/Deportes.js"
 
 
 const registrarEstudiante= async(req,res) => {
