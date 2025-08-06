@@ -13,7 +13,7 @@ router.get("/estudiante/:id",verificarTokenJWT, detalleEstudiante)
 
 router.delete("/estudiante/eliminar/:id", verificarTokenJWT,eliminarEstudiante)
 
-router.put("/estudiante/actualizar/:id", verificarTokenJWT,eliminarEstudiante)
+router.put("/estudiante/actualizar/:id", verificarTokenJWT,actualizarEstudiante)
 
 
 export default router

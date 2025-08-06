@@ -49,7 +49,6 @@ const administradorSchema = new Schema({
         type:String,
         default:"administrador",
     }
-
 },{
     timestamps:true
 })
