@@ -1,5 +1,5 @@
 import Director from "../models/Director.js"
-import { sendMailToOwner } from "../config/nodemailer.js"
+import { sendMailToOwner } from "../config/nodemailler.js"
 import { v2 as cloudinary } from 'cloudinary'
 import fs from "fs-extra"
 
