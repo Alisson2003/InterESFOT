@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose';
+import mongoose, {Schema, model} from 'mongoose';
 import bcrypt from "bcryptjs";
 
 const directorSchema = new Schema({
