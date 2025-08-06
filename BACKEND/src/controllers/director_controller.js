@@ -54,8 +54,13 @@ const registrarDirector = async(req,res)=>{
     res.status(201).json({msg:"Registro exitoso del director y correo enviado al administrador", nuevoDirector})
 }
 
+const listarDirectores = async (req,res)=>{
+    const directores = await Director.find({estadoDirector:true}).where('director').equals(req.directorBDD).select("-salida -createdAt -updatedAt -__v").populate('director','_id nombre apellido')
+    res.status(200).json(directores)
+}
 
 
 export{
-    registrarDirector
+    registrarDirector,
+    listarDirectores
 }
