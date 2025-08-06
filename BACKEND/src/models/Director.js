@@ -67,7 +67,7 @@ const directorSchema = new Schema({
     timestamps:true
 })
 
-// Método para cifrar el password del propietario
+// Método para cifrar el password del director
 directorSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
     return bcrypt.hash(password, salt)
@@ -75,7 +75,7 @@ directorSchema.methods.encrypPassword = async function(password){
 
 // Método para verificar si el password ingresado es el mismo de la BDD
 directorSchema.methods.matchPassword = async function(password){
-    return bcrypt.compare(password, this.passwordPropietario)
+    return bcrypt.compare(password, this.passwordDirector)
 }
 
-export default model('Paciente',directorSchema);
+export default model('Director',directorSchema);

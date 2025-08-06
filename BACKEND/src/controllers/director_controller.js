@@ -20,7 +20,7 @@ const registrarDirector = async(req,res)=>{
 
     const nuevoDirector = new Director({
         ...req.body,
-        passwordPropietario: await Director.prototype.encrypPassword(password),
+        passwordDirector: await Director.prototype.encrypPassword(password),
         administrador: req.administradorBDD._id
     })
 
