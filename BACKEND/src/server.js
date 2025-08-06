@@ -6,7 +6,7 @@ import routerAdministrador from './routers/administrador_routes.js';
 //Director
 import cloudinary from 'cloudinary'
 import fileUpload from "express-fileupload"
-import router from './routers/administrador_routes.js';
+import routerDirector from './routers/director_routes.js';
 
 dotenv.config();
 
