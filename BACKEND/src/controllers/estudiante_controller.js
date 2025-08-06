@@ -5,6 +5,7 @@ import fs from "fs-extra"
 import mongoose from "mongoose"
 import { crearTokenJWT } from "../middlewares/JWT.js"
 
+/*
 const registrarEstudiante = async(req,res)=>{
 
     const {emailEstudiante} = req.body
@@ -22,6 +23,57 @@ const registrarEstudiante = async(req,res)=>{
         administrador: req.administradorBDD._id
     })
 
+    if(req.files?.imagen){
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath,{folder:'Estudiantes'})
+        nuevoEstudiante.avatarCarrera = secure_url
+        nuevoEstudiante.avatarCarreraID = public_id
+        await fs.unlink(req.files.imagen.tempFilePath)
+    }
+
+    if (req.body?.avatarCarreraIA) {
+        const base64Data = req.body.avatarCarreraIA.replace(/^data:image\/\w+;base64,/, '')
+        const buffer = Buffer.from(base64Data, 'base64')
+        const { secure_url } = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream({ folder: 'Estudiante', resource_type: 'auto' }, (error, response) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    resolve(response)
+                }
+            })
+            stream.end(buffer)
+        })
+        nuevoEstudiante.avatarCarrera = secure_url
+    }
+    
+    await nuevoEstudiante.save()
+    
+    await sendMailToOwner(emailEstudiante, "ESTUDIANTE" + password)
+    
+    res.status(201).json({msg:"Registro exitoso del estudiante y correo enviado al administrador", nuevoEstudiante})
+}
+*/
+
+const registrarEstudiante = async(req,res)=>{
+
+    const {emailEstudiante} = req.body
+
+    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    
+    const verificarEmailBDD = await Estudiante.findOne({emailEstudiante})
+    if(verificarEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
+
+    const password = Math.random().toString(36).toUpperCase().slice(2, 5)
+
+    // Aquí es donde está el cambio. Ahora solo pasas la contraseña sin encriptar.
+    // El "pre-save hook" en el modelo se encargará de encriptarla antes de guardar.
+    const nuevoEstudiante = new Estudiante({
+        ...req.body,
+        passwordEstudiante: password, // <-- ¡Este es el cambio clave!
+        administrador: req.administradorBDD._id
+    })
+
+    // ... (el resto del código para manejar archivos y guardar)
     if(req.files?.imagen){
         const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath,{folder:'Estudiantes'})
         nuevoEstudiante.avatarCarrera = secure_url

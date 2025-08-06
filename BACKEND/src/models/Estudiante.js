@@ -67,8 +67,26 @@ estudianteSchema.methods.encrypPassword = async function(password) {
 }
 
 // Método para verificar si el password ingresado es el mismo de la BDD
-estudianteSchema.methods.matchPassword = async function(password) {
+/*estudianteSchema.methods.matchPassword = async function(password) {
     return bcrypt.compare(password, this.passwordEstudiante)
 }
+
+export default model('Estudiante', estudianteSchema);
+*/
+
+estudianteSchema.pre('save', async function(next) {
+    // Solo encripta el password si ha sido modificado (o es nuevo)
+    if (!this.isModified('passwordEstudiante')) {
+        return next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.passwordEstudiante = await bcrypt.hash(this.passwordEstudiante, salt);
+    next();
+});
+
+// Método para verificar si el password ingresado es el mismo de la BDD
+estudianteSchema.methods.matchPassword = async function(password) {
+    return await bcrypt.compare(password, this.passwordEstudiante);
+};
 
 export default model('Estudiante', estudianteSchema);
