@@ -61,7 +61,7 @@ const listarDirectores = async (req,res)=>{
 
 const listarDirectores = async (req, res) => {
     try {
-        console.log("🧪 req.directorBDD:", req.directorBDD); // Esto imprime qué viene en el request
+        console.log("🧪 req.directorBDD:", req.administradorBDD); // Esto imprime qué viene en el request
 
         const directores = await Director.find({ estadoDirector: true })
         .where('director')
