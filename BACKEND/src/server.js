@@ -6,7 +6,7 @@ import routerAdministrador from './routers/administrador_routes.js';
 //Director
 import cloudinary from 'cloudinary'
 import fileUpload from "express-fileupload"
-import routerDirector from './routers/estudiante_routes.js';
+import routerEstudiante from './routers/estudiante_routes.js';
 
 dotenv.config();
 
@@ -44,7 +44,7 @@ app.use(fileUpload({
 app.use('/api', routerAdministrador);
 
 // Rutas para Director
-app.use('/api',routerDirector);
+app.use('/api',routerEstudiante);
 
 // Rutas 
 app.get('/', (req, res) => {
