@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import Administrador from "../models/Administrador.js"
-import Director from "../models/Director.js"
+import Director from "../models/Estudiante.js"
 
 const crearTokenJWT = (id, rol) => {
 

@@ -1,94 +1,146 @@
-import Estudiante from ".../models/Estudiante.js"
-import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodemailler.js"
+import Estudiante from "../models/Estudiante.js"
+import { sendMailToOwner } from "../config/nodemailler.js"
+import { v2 as cloudinary } from 'cloudinary'
+import fs from "fs-extra"
+import mongoose from "mongoose"
+import { crearTokenJWT } from "../middlewares/JWT.js"
 
+const registrarEstudiante = async(req,res)=>{
 
-const registro = async (req,res)=>{
-    const {email,password} = req.body
+    const {emailEstudiante} = req.body
+
     if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-        const estudianteEmailBDD = await Estudiante.findOne({email})
-
-    if(estudianteEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
-        const nuevoEstudiante = await Estudiante(req.body)
     
-    //nuevoEstudiante.password = await nuevoEstudiante.encrypPassword(password)
+    const verificarEmailBDD = await Estudiante.findOne({emailEstudiante})
+    if(verificarEmailBDD) return res.status(400).json({msg:"Lo sentimos, el email ya se encuentra registrado"})
 
-    const token = nuevoEstudiante.crearToken()
-    await sendMailToRegister(email,token)
+    const password = Math.random().toString(36).toUpperCase().slice(2, 5)
 
-    await estudianteBDD.save()
-    res.status(200).json({msg:"Revisa tu correo electrónico para confirmar tu cuenta"})
+    const nuevoEstudiante = new Estudiante({
+        ...req.body,
+        passwordEstudiante: await Estudiante.prototype.encrypPassword(password),
+        administrador: req.administradorBDD._id
+    })
 
-}
+    if(req.files?.imagen){
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.imagen.tempFilePath,{folder:'Estudiantes'})
+        nuevoEstudiante.avatarCarrera = secure_url
+        nuevoEstudiante.avatarCarreraID = public_id
+        await fs.unlink(req.files.imagen.tempFilePath)
+    }
 
-const confirmarMail = async (req,res)=>{
-    if (!(req.params.token)) return res.status(400).json({msg:"Lo sentimos, no se puede validar la cuenta"})
+    if (req.body?.avatarCarreraIA) {
+        const base64Data = req.body.avatarCarreraIA.replace(/^data:image\/\w+;base64,/, '')
+        const buffer = Buffer.from(base64Data, 'base64')
+        const { secure_url } = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream({ folder: 'Estudiante', resource_type: 'auto' }, (error, response) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    resolve(response)
+                }
+            })
+            stream.end(buffer)
+        })
+        nuevoEstudiante.avatarCarrera = secure_url
+    }
     
-    //2
-    const estudianteBDD = await Estudiante.findOne({token:req.params.token})
-
-    if(!estudianteBDD?.token) return res.status(404).json({msg:"La cuenta ya ha sido confirmada"})
-    //3
-    estudianteBDD.token = null
-    estudianteBDD.confirmEmail=true
-    await estudianteBDD.save()
-
-    //4
-    res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"})
-}
-
-const recuperarPassword = async(req,res)=>{
-    const {email} = req.body
-    if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const estudianteBDD = await Estudiante.findOne({email})
-    if(!estudianteBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
-    const token = estudianteBDD.crearToken()
-    estudianteBDD.token=token
-    await sendMailToRecoveryPassword(email,token)
-    await estudianteBDD.save()
-    res.status(200).json({msg:"Revisa tu correo electrónico para reestablecer tu cuenta"})
-}
-
-
-const comprobarTokenPasword = async (req,res)=>{
-    const {token} = req.params
-    const estudianteBDD = await Estudiante.findOne({token})
-    if(estudianteBDD?.token !== req.params.token) return res.status(404).json({msg:"Lo sentimos, no se puede validar la cuenta"})
-    await estudianteBDD.save()
-    res.status(200).json({msg:"Token confirmado, ya puedes crear tu nuevo password"}) 
-}
-
-
-const crearNuevoPassword = async (req,res)=>{
-    //1
-    const {password, confirmpassword} = req.body
+    await nuevoEstudiante.save()
     
-    //2
-    if(Object.values(req.body).includes("")) return res.status(404).json({msg: "Lo sentimos,debes llenar todos los campos"})
-
-    if(password !== confirmpassword) return res.status(404).json({msg: "Lo sentimos,los password no cinciden"})
-
-    const estudianteBDD = await Estudiante.findOne({token:req.params.token})
-
-    if(estudianteBDD.token !== req.params.token) return res.status(404).json({msg: "Lo sentimos, no se puede validar la cuenta"})
-
-    //3 logica - dejando token nulo y encriptacion de contraseña
-    estudianteBDD.token = null
-    estudianteBDD.password = await estudianteBDD.encrypPassword(password)
-
-    await estudianteBDD.save()
-
-    //4
-
-    res.status(200).json({msg: "Felicitaciones, ya puedes iniciar sesion con tu nuevo password"})
-
+    await sendMailToOwner(emailEstudiante, "ESTUDIANTE" + password)
+    
+    res.status(201).json({msg:"Registro exitoso del estudiante y correo enviado al administrador", nuevoEstudiante})
 }
 
+const listarEstudiantes = async (req, res) => {
+    const estudiantes = await Estudiante.find({ estadoEstudiante: true }).where('administrador').equals(req.administradorBDD._id)
+    .select("-salida -createdAt -updatedAt -__v");
+    res.status(200).json(estudiantes);
+}
 
+const detalleEstudiante = async(req,res)=>{ 
+    const { id } = req.params;
+    console.log("ID en params:", id);
+    console.log("ID desde token:", req.estudianteBDD?._id, req.administradorBDD?._id);
+
+    if( !mongoose.Types.ObjectId.isValid(id) )
+        return res.status(404).json({msg:`Lo sentimos, no existe el estudiante ${id}`});
+
+    const estudiante = await Estudiante.findById(id).select("-createdAt -updatedAt -__v").populate('administrador','_id nombre apellido');
+    
+    if(!estudiante)
+        return res.status(404).json({msg:`Estudiante con id ${id} no encontrado en la base de datos.`});
+    
+    res.status(200).json(estudiante);
+}
+
+const eliminarEstudiante = async (req, res) => {
+    const { id } = req.params;
+    if (Object.values(req.body).includes("")) {
+        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ msg: `Lo sentimos, no existe el estudiante con id ${id}` });
+    }
+    const { periodoEstudiante } = req.body;
+    await Estudiante.findByIdAndUpdate(id, {periodoEstudiante: String(periodoEstudiante), estadoEstudiante: false});
+
+    res.status(200).json({ msg: "Periodo del estudiante registrado y estado actualizado exitosamente" });
+};
+
+const actualizarEstudiante = async (req, res) => {
+    const { id } = req.params;
+
+    if (Object.values(req.body).includes("")) {
+        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });}
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ msg: `Lo sentimos, no existe el estudiante con id ${id}` });}
+
+    if (req.files?.imagen) {
+        const estudiante = await Estudiante.findById(id);
+        if (estudiante.avatarCarreraID) {
+            await cloudinary.uploader.destroy(estudiante.avatarCarreraID);
+        }
+        const cloudiResponse = await cloudinary.uploader.upload(req.files.imagen.tempFilePath, {
+            folder: "Estudiantes",
+        });
+        req.body.avatarCarrera = cloudiResponse.secure_url;
+        req.body.avatarCarreraID = cloudiResponse.public_id;
+        await fs.unlink(req.files.imagen.tempFilePath);
+    }
+
+    await Estudiante.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json({ msg: "Actualización exitosa del estudiante" });
+};
+
+const loginEstudiante = async (req, res) => {
+    const { emailEstudiante, passwordEstudiante } = req.body;
+
+    if (Object.values(req.body).includes(""))
+        return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+
+    const estudianteBDD = await Estudiante.findOne({ emailEstudiante });
+
+    if (!estudianteBDD)
+        return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" });
+
+    const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante);
+
+    if (!verificarPassword)
+        return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
+
+    const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol);
+    const { _id, rol } = estudianteBDD;
+
+    res.status(200).json({ token, rol, _id });
+};
 
 export {
-    registro,
-    confirmarMail,
-    recuperarPassword,
-    comprobarTokenPasword,
-    crearNuevoPassword
+    registrarEstudiante,
+    listarEstudiantes,
+    detalleEstudiante,
+    eliminarEstudiante,
+    actualizarEstudiante,
+    loginEstudiante
 }
