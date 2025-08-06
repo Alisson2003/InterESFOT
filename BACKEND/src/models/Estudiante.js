@@ -20,7 +20,6 @@ const estudianteSchema = new Schema({
     emailEstudiante: {
         type: String,
         required: true,
-        trim: true,
         unique: true
     },
     passwordEstudiante: {

@@ -114,32 +114,33 @@ const actualizarEstudiante = async (req, res) => {
     res.status(200).json({ msg: "Actualización exitosa del estudiante" });
 };
 
-const loginEstudiante = async(req, res) => {
+const loginEstudiante = async (req, res) => {
+    console.log("REQ.BODY:", req.body);
+
     const { email: emailEstudiante, password: passwordEstudiante } = req.body;
 
-    if (Object.values(req.body).includes("")) {
-        return res.status(404).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    console.log("EMAIL:", emailEstudiante);
+    console.log("PASSWORD:", passwordEstudiante);
+
+    if (!emailEstudiante || !passwordEstudiante) {
+        return res.status(400).json({ msg: "Faltan campos" });
     }
 
-    const estudiantesBDD = await Estudiante.findOne({ email: emailEstudiante });
-    if (!estudiantesBDD) {
-        return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" });
+    const estudianteBDD = await Estudiante.findOne({ emailEstudiante });
+
+    if (!estudianteBDD) {
+        return res.status(404).json({ msg: "Usuario no encontrado" });
     }
 
-    const verificarPassword = await estudiantesBDD.matchPassword(passwordEstudiante);
+    const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante);
     if (!verificarPassword) {
-        return res.status(404).json({ msg: "Lo sentimos, el password no es el correcto" });
+        return res.status(401).json({ msg: "Contraseña incorrecta" });
     }
 
-    const token = crearTokenJWT(estudiantesBDD._id, estudiantesBDD.rol);
-    const { _id, rol } = estudiantesBDD;
-
-    res.status(200).json({
-        token,
-        rol,
-        _id
-    });
+    const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol);
+    res.json({ token, rol: estudianteBDD.rol, _id: estudianteBDD._id });
 };
+
 
 
 export {
