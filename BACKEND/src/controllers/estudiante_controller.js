@@ -117,7 +117,7 @@ const actualizarEstudiante = async (req, res) => {
 const loginEstudiante = async(req,res)=>{
     const {email:emailEstudiante,password:passwordEstudiante} = req.body
     if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const estudiantesBDD = await Estudiante.findOne({emailPropietario})
+    const estudiantesBDD = await Estudiante.findOne({emailEstudiante})
     if(!estudiantesBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"})
     const verificarPassword = await estudianteBDD.matchPassword(passwordEstudiante)
     if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
