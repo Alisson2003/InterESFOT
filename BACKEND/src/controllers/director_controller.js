@@ -102,10 +102,36 @@ const eliminarDirector = async (req, res) => {
     res.status(200).json({ msg: "Periodo del director registrado y estado actualizado exitosamente" });
 };
 
+const actualizarDirector = async (req, res) => {
+    const { id } = req.params;
+
+    if (Object.values(req.body).includes("")) {
+        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });}
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ msg: `Lo sentimos, no existe el director con id ${id}` });}
+
+    if (req.files?.imagen) {
+        const director = await Director.findById(id);
+        if (director.avatarFacultadID) {
+        await cloudinary.uploader.destroy(director.avatarFacultadID);
+        }
+        const cloudiResponse = await cloudinary.uploader.upload(req.files.imagen.tempFilePath, {
+        folder: "Directores",
+        });
+        req.body.avatarFacultad = cloudiResponse.secure_url;
+        req.body.avatarFacultadID = cloudiResponse.public_id;
+        await fs.unlink(req.files.imagen.tempFilePath);
+    }
+
+    await Director.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json({ msg: "Actualización exitosa del director" });
+};
 
 export{
     registrarDirector,
     listarDirectores,
     detalleDirector,
-    eliminarDirector
+    eliminarDirector,
+    actualizarDirector
 }

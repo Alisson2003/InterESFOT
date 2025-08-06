@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { eliminarDirector, detalleDirector, listarDirectores, registrarDirector } from '../controllers/director_controller.js'
+import { eliminarDirector, detalleDirector, listarDirectores, registrarDirector, actualizarDirector } from '../controllers/director_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 const router = Router()
 
@@ -10,6 +10,8 @@ router.get("/director",verificarTokenJWT,listarDirectores)
 router.get("/director/:id",verificarTokenJWT, detalleDirector)
 
 router.delete("/director/eliminar/:id", verificarTokenJWT,eliminarDirector)
+
+router.put("/director/actualizar/:id", verificarTokenJWT,actualizarDirector)
 
 
 export default router
