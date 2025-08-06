@@ -97,7 +97,7 @@ const eliminarDirector = async (req, res) => {
         return res.status(404).json({ msg: `Lo sentimos, no existe el director con id ${id}` });
     }
     const { periodoDirector } = req.body;
-    await Director.findByIdAndUpdate(id, {periodoDirector:String.parse(periodoDirector), estadoDirector: false});
+    await Director.findByIdAndUpdate(id, {periodoDirector:String(periodoDirector), estadoDirector: false});
 
     res.status(200).json({ msg: "Periodo del director registrado y estado actualizado exitosamente" });
 };
