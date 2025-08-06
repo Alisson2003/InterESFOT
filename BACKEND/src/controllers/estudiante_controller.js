@@ -56,7 +56,7 @@ const registrarEstudiante= async(req,res) => {
     
     await nuevoEstudiante.save()
 
-    await sendMailToOwner(emailPropietario,"ESFOT"+password) // ESFOT4FEE
+    await sendMailToOwner(emailEstudiante,"ESFOT"+password) // ESFOT4FEE
 
     //   -------------------  4
     res.status(201).json({msg:"Registro exitoso del estudiante y correo enviado", nuevoEstudiante})
