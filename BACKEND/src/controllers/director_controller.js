@@ -88,10 +88,24 @@ const detalleDirector = async(req,res)=>{
     res.status(200).json(director);
 }
 
+const eliminarDirector = async (req, res) => {
+    const { id } = req.params;
+    if (Object.values(req.body).includes("")) {
+        return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ msg: `Lo sentimos, no existe el director con id ${id}` });
+    }
+    const { periodoDirector } = req.body;
+    await Director.findByIdAndUpdate(id, {periodoDirector:String.parse(periodoDirector), estadoDirector: false});
+
+    res.status(200).json({ msg: "Periodo del director registrado y estado actualizado exitosamente" });
+};
 
 
 export{
     registrarDirector,
     listarDirectores,
-    detalleDirector
+    detalleDirector,
+    eliminarDirector
 }
