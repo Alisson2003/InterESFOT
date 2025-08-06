@@ -64,10 +64,28 @@ const listarDirectores = async (req, res) => {
     .select("-salida -createdAt -updatedAt -__v");
     res.status(200).json(directores);
 }
+/*
+const detalleDirector = async(req,res)=>{
+    const {id} = req.params
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg:`Lo sentimos, no existe el director ${id}`});
+    const director = await Director.findById(id).select("-createdAt -updatedAt -__v").populate('administrador','_id nombre apellido')
+    res.status(200).json(director)
+}*/
 
+console.log("ID recibido:", id);
+const director = await Director.findById(id)
+    .select("-createdAt -updatedAt -__v")
+    .populate('administrador', '_id nombre apellido');
+
+    console.log("Resultado de búsqueda:", director);
+
+    if (!director) {
+    return res.status(404).json({ msg: `No se encontró el director con id ${id}` });
+}
 
 
 export{
     registrarDirector,
-    listarDirectores
+    listarDirectores,
+    detalleDirector
 }
