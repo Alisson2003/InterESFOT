@@ -20,7 +20,7 @@ const verificarTokenJWT = async (req, res, next) => {
             req.administradorBDD = await Administrador.findById(id).lean().select("-password")
             next()
         }else{
-            req.pacienteBDD = await Paciente.findById(id).lean().select("-password")
+            req.directorBDD = await Director.findById(id).lean().select("-password")
             next()
         }
     } catch (error) {
