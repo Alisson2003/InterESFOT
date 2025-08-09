@@ -1,3 +1,0 @@
-# Ignorar variables de entorno
-.env
-BACKEND/.env
