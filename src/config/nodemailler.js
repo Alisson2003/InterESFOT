@@ -16,13 +16,13 @@ let transporter = nodemailer.createTransport({
 const sendMailToRegister = (userMail, token) => {
 
     let mailOptions = {
-        from: 'admin@esfot.com',
+        from: process.env.USER_MAILTRAP,
         to: userMail,
         subject: "INTER_ESFOT-💪",
         html: `<p>¡Registro exitoso! 🎉
         <br>Gracias por unirte a la comunidad de la ESFOT.</br>
         <brAhora solo falta un paso: haz clic en Iniciar y prepárate para disfrutar de experiencias mágicas con nosotros.</br>
-        <br><a href="${process.env.URL_FRONTEND}confirmar/${token}">INICIAR</a></br>
+        <br><a href="${process.env.URL_FRONTEND}confirm/${token}">INICIAR</a></br>
         <footer>
         ¡Bienvenido/a a bordo! Estamos emocionados de acompañarte en esta aventura. 🌟
     </footer>
@@ -40,7 +40,7 @@ const sendMailToRegister = (userMail, token) => {
 
 const sendMailToRecoveryPassword = async(userMail,token)=>{
     let info = await transporter.sendMail({
-    from: 'admin@esfot.com',
+    from: process.env.USER_MAILTRAP,
     to: userMail,
     subject: "Correo para reestablecer tu contraseña",
     html: `
@@ -54,7 +54,26 @@ const sendMailToRecoveryPassword = async(userMail,token)=>{
     console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
 }
 
+const sendMailToOwner = async(userMail,password)=>{
+    let info = await transporter.sendMail({
+    from: process.env.USER_MAILTRAP,
+    to: userMail,
+    subject: "Correo de bienvenida - Director de la Facultad ESFOT",
+    html: `
+    <h1>INTER_ESFOT-💪</h1>
+    <hr>
+    <p>Contraseña de acceso: ${password}</p>
+    <a href=${process.env.URL_FRONTEND}login>Clic para iniciar sesión</a>
+    <hr>
+    <footer>La ESFOT te da la más cordial bienvenida.</footer>
+    `
+    });
+    console.log("Mensaje enviado satisfactoriamente: ", info.messageId);
+}
+
+
 export {
     sendMailToRegister,
-    sendMailToRecoveryPassword
-} 
+    sendMailToRecoveryPassword,
+    sendMailToOwner
+}

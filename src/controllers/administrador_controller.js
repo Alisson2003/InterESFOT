@@ -3,7 +3,7 @@ import { sendMailToRegister, sendMailToRecoveryPassword } from "../config/nodema
 import { crearTokenJWT } from "../middlewares/JWT.js"
 import mongoose from "mongoose"
 
-
+//hola
 
 const registro = async (req,res)=>{
     const {email,password} = req.body
@@ -95,7 +95,6 @@ const crearNuevoPassword = async (req,res)=>{
 
 }
 
-
 const login = async(req,res)=>{
     const {email,password} = req.body;
     if (Object.values(req.body).includes("")) 
@@ -117,7 +116,10 @@ const login = async(req,res)=>{
     
     const {nombre,apellido,celular,_id,rol} = administradorBDD
     
+    const token = crearTokenJWT(administradorBDD._id,administradorBDD.rol)
+
     res.status(200).json({
+        token,
         nombre,
         apellido,
         celular,
@@ -126,11 +128,54 @@ const login = async(req,res)=>{
     })
 }
 
+const perfil =(req,res)=>{
+		const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.administradorBDD
+    res.status(200).json(datosPerfil)
+}
+
+const actualizarPerfil = async (req,res)=>{
+    const {id} = req.params
+    const {nombre,apellido,direccion,celular,email} = req.body
+    if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(404).json({msg:`Lo sentimos, debe ser un id válido`});
+    if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
+    const administradorBDD = await Administrador.findById(id)
+    if(!administradorBDD) return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
+    if (administradorBDD.email != email)
+    {
+        const administradorBDDMail = await Administrador.findOne({email})
+        if (administradorBDDMail)
+        {
+            return res.status(404).json({msg:`Lo sentimos, el email existe ya se encuentra registrado`})  
+        }
+    }
+    administradorBDD.nombre = nombre ?? administradorBDD.nombre
+    administradorBDD.apellido = apellido ?? administradorBDD.apellido
+    administradorBDD.direccion = direccion ?? administradorBDD.direccion
+    administradorBDD.celular = celular ?? administradorBDD.celular
+    administradorBDD.email = email ?? administradorBDD.email
+    await administradorBDD.save()
+    console.log(administradorBDD)
+    res.status(200).json(administradorBDD)
+}
+
+const actualizarPassword = async (req,res)=>{
+    const administradorBDD = await Administrador.findById(req.administradorBDD._id)
+    if(!administradorBDD) return res.status(404).json({msg:`Lo sentimos, no existe el administrador ${id}`})
+    const verificarPassword = await administradorBDD.matchPassword(req.body.passwordactual)
+    if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
+    administradorBDD.password = await administradorBDD.encrypPassword(req.body.passwordnuevo)
+    await administradorBDD.save()
+    res.status(200).json({msg:"Password actualizado correctamente"})
+}
+
 export {
     registro,
     confirmarMail,
     recuperarPassword,
     comprobarTokenPasword,
     crearNuevoPassword,
-    login
+    login,
+    perfil,
+    actualizarPerfil,
+    actualizarPassword
 }

@@ -1,74 +1,79 @@
-import {Schema, model} from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import bcrypt from "bcryptjs";
 
 const estudianteSchema = new Schema({
-    nombre:{
-        type:String,
-        require:true,
-        trim:true
+    nombreEstudiante: {
+        type: String,
+        required: true,
+        trim: true
     },
-    apellido:{
-        type:String,
-        require:true,
-        trim:true
+    apellidoEstudiante: {
+        type: String,
+        required: true,
+        trim: true
     },
-    celular:{
-        type:String,
-        trim:true,
-        default:null
+    celularEstudiante: {
+        type: String,
+        trim: true,
+        default: null
     },
-    email:{
-        type:String,
-        require:true,
-        trim:true,
-                unique:true
+    emailEstudiante: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true
     },
-    facultad:{
-        type:String,
-        require:true,
-        trim:true
+    passwordEstudiante: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
-        require:true
+    carreraEstudiante: {
+        type: String,
+        required: true,
+        trim: true
     },
-    status:{
-        type:Boolean,
-        default:true
+    avatarCarrera: {
+        type: String,
+        trim: true
     },
-    token:{
-        type:String,
-        default:null
+    avatarCarreraID: {
+        type: String,
+        trim: true
     },
-    confirmEmail:{
-        type:Boolean,
-        default:false
+    periodoEstudiante: {
+        type: String,
+        required: true,
+        trim: true
     },
-    rol:{
-        type:String,
-        default:"estudiante",
-    }
-},{
-    timestamps:true
-})
+    estadoEstudiante: {
+        type: Boolean,
+        default: true
+    },
+    rol: {
+        type: String,
+        default: "estudiante"
+    },
+    administrador: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Administrador',
+    },
+    deportes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Deporte'
+    }]
+}, {
+    timestamps: true
+});
 
-// Método para cifrar el password del veterinario
 estudianteSchema.methods.encrypPassword = async function(password){
     const salt = await bcrypt.genSalt(10)
-    const passwordEncryp = await bcrypt.hash(password,salt)
-    return passwordEncryp
+    return bcrypt.hash(password, salt)
 }
 
 // Método para verificar si el password ingresado es el mismo de la BDD
 estudianteSchema.methods.matchPassword = async function(password){
-    const response = await bcrypt.compare(password,this.password)
-    return response
+    return bcrypt.compare(password, this.passwordEstudiante)
 }
 
-// Método para crear un token 
-estudianteSchema.methods.crearToken = function(){
-    const tokenGenerado = this.token = Math.random().toString(36).slice(2)
-    return tokenGenerado
-}
 
-export default model('Estudiante',estudianteSchema)
+export default model('Estudiante', estudianteSchema);
